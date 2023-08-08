@@ -1,0 +1,82 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+        body{
+        background-color: rgb(224 229 231);
+        overflow: hidden;
+    }
+    .triangleRight{
+        position: absolute;
+        right: -3%;
+        top: 50%;
+        transform: rotate(90deg);
+        height: 20rem;
+        width: 0;
+        animation: triangle 1s linear 1s forwards;
+    }
+    .triangleLeft{
+        height: 20rem;
+        width: 0;
+        position: absolute;
+        left: -5%;
+        top: 6%;
+        transform: rotate(270deg);
+        animation: triangle 1s linear 0.5s forwards;
+    }
+    @keyframes triangle{
+        0%{
+            width: 0px;
+        }
+        50%{
+            width: 40rem;
+        }
+        75%{
+            width: 30rem;
+        }
+        100%{
+            width: 25rem;
+        }
+
+    }
+    
+</style>
+
+<div class="mainContainer">
+    <img src="https://www.fne.com/wp-content/uploads/light-blue-triangle-down.png" alt="triangle" class="triangleRight"/>
+    <img src="https://www.fne.com/wp-content/uploads/light-blue-triangle-down.png" alt="triangle" class="triangleLeft"/>
+    <div style="text-align: center; margin-left: 37%;" class="formContainer margin">
+        <h2 style="padding-bottom: 5%;">Form To Schedule Class</h2>
+    
+        <form id="createScheduledClassForm" action="#" method="POST" class="margin">
+            <input type="text" name="title" placeholder="Class Title" class="margin className" required> 
+            <br>
+            <textarea name="description" id="description" class="margin" cols="30" rows="5" class="margin textArea" placeholder="Type Class Description And Instruction" required></textarea>
+            <br>
+            <label for="startTime" class="margin className">Start Time of Class</label>
+            <br>
+            <input type="datetime-local" name="startTime" id="startTime" class="margin className" placeholder="Start Time Of Class" required>
+            <br>
+            <input type="number" name="duration" id="totalMarks" class="margin className" placeholder="Duration of Class (in hours)" required>
+            <br>
+            <input type="text" id="classLink" name="classLink" placeholder="Class Link" class="margin className" required> 
+            <br>
+            <input type="text" name="classPassword" placeholder="Class PassCode If Any" class="margin className"> 
+            <br>            
+            
+            <input type="submit" value="Create Class" id="createScheduledClass" class="btn margin">
+        </form>
+    </div>
+    <!-- <div class="formContainer margin">
+        <img src="" alt="side ki photo" class="ScheduledClassFormImage">
+    </div> -->
+</div>
+
+<script>
+    const createScheduledClass = document.getElementById('createScheduledClass');
+    const createScheduledClassForm = document.getElementById('createScheduledClassForm');
+    const classLink = document.getElementById('classLink');
+    let action = location.pathname
+    createScheduledClassForm.setAttribute('action', action);
+</script>

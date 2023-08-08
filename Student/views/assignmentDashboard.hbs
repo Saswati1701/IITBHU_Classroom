@@ -1,0 +1,221 @@
+<style>
+    .MainBox{
+        height: 89vh;
+        padding-top: 2%;
+        display: flex;
+        flex-direction: row;
+        background-color: rgb(231 237 239);
+    }
+
+    .DetailsBox{
+        width: 72%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .UploadBox{
+        border: 1px solid #1967d2;
+        width: 28%;
+        height: 300px;
+        box-shadow: 0 1px 2px 0 rgb(60 64 67 / 30%), 0 2px 6px 2px rgb(60 64 67 / 15%);
+        overflow: hidden;
+        margin: 1% 6% 0 0;
+    }
+
+    .detail{
+        border: 1px solid #1967d2;
+        margin: 5px;
+        padding: 10px;
+        width: 80%;
+    }
+
+    .title{
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    {{!-- from createAssignment --}}
+
+    .btn{
+        padding: 5px;
+        border-radius: 5px;
+        background-color: #b2aefc;
+        border: none;
+        width: 150px;
+        height: 40px;
+        font-size: large;
+    }
+    .btn:hover{
+        cursor: pointer;
+        box-shadow: 0px 0px 4px 2px #8a86ce;
+    }
+    .margin{
+        margin: 10px;
+    }
+    /* .className{
+        padding: 7px;
+        border-radius: 5px;
+    } */
+    .formContainer{
+        width: 25%;
+        padding: 20px;
+        margin: 0%;
+        /* margin-top: 3%; */
+        margin-left: 60%;
+        background-color: #4b4949;
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0px 0px 14px 8px black;
+    }
+    .textArea{
+        border-radius: 5px;
+    }
+    .className{
+        padding: 10px;
+        border-radius: 8px;
+    }
+    #description{
+        letter-spacing: .01428571em;
+        font-family: Roboto,Arial,sans-serif;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.25rem;
+        color: #5f6368;
+    }
+    #showFile{
+        height: 1000px;
+    }
+
+    .marksAndDeadline{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    #title{
+        font-family: 'Google Sans',Roboto,Arial,sans-serif;
+        color: #1967d2;
+        font-size: 2.5rem;
+        font-weight: 400;
+        line-height: 2.5rem;
+    }
+
+    #deadline{
+        letter-spacing: .01785714em;
+        font-family: 'Google Sans',Roboto,Arial,sans-serif;
+        font-size: 0.875rem;
+        font-weight: bold;
+        line-height: 1.25rem;
+        color: #3c4043;
+    }
+
+    #totalMarks{
+        letter-spacing: .01785714em;
+        font-family: 'Google Sans',Roboto,Arial,sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        color: #3c4043;
+    }
+
+    .fileUploader{
+        font-family: 'Google Sans',Roboto,Arial,sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.25px;
+    }
+
+    .fileUploaderButton{
+        padding: 10px;
+        height: fit-content;
+        background-color: #1967d2;
+        color: white;
+        border-radius: 10px;
+    }
+
+</style>
+
+<div class="MainBox">
+    <div class="DetailsBox">
+        <div class="detail" id="title" style="border: none; margin-left:0px;">{{assignmentData.title}}</div>
+        <div class="detail" id="description" style="margin-top: 0px; padding-top: 0px; border: none;">{{assignmentData.description}}</div>
+        <div class="marksAndDeadline detail"  style="margin-top: 0px; border: none;">
+            <div id="totalMarks"><span class="marksObtained" style="font-weight: bold;">{{marks}}</span>/{{assignmentData.totalMarks}}</div>
+            <div id="deadline" class="{{isSubmitted}}">Due {{formatDate assignmentData.deadline 'MMMM Do YYYY, h:mm:ss a'}}</div>
+        </div>
+        <div class="detail" id="showFile">
+            <iframe style="width: 100%;  height: 100%" src="/open/{{assignmentData.fileUploadName}}#view=fitH"  frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <div class="UploadBox">
+        <h1 id="uploadText" style="margin-left: 15px;">Upload here</h1>
+
+        <form id="createAssignmentForm" action="#" method="POST" class="margin">
+            <div id="uploadForm">
+                <input type="file" name="file" id="file" class="custom-file-input margin fileUploader">
+                <br>
+                <label for="file" id="fileLabel" style="margin-left: 13px;">You Have Not Choosen Any File Yet!!!</label>
+            </div>
+
+            <input type="submit" value="+ Add or Create" id="createAssignment" class="fileUploaderButton margin">
+        </form>
+    </div>
+</div>
+
+<script>
+    const createAssignment = document.getElementById('createAssignment');
+    createAssignment.disabled = true;
+    const createAssignmentForm = document.getElementById('createAssignmentForm');
+    const uploadForm=document.getElementById('uploadForm')
+    const UploadBox=document.getElementsByClassName('UploadBox')
+    const uploadText=document.getElementById('uploadText')
+    const file = document.getElementById('file');
+    let fileName;
+
+    // add event listener to file
+    file.addEventListener('change', (file)=>{
+        // get the file
+        console.log('click to hua yrr');
+        console.log(file.target.files[0]);
+        let formData = new FormData();           
+        formData.append("file", file.target.files[0]);
+        fetch('/upload', {
+            method: "POST",
+            body: formData
+        }).then(res => res.json()).then(data => {
+            fileName = data["file"].filename;
+            let action = location.pathname  + fileName;
+            createAssignmentForm.setAttribute('action', action);
+            console.log('unique file name: ' , fileName);
+            fileLabel.innerText = data["file"].originalname;
+            file.disabled = true; 
+            createAssignment.disabled = false;  
+            // dataDisplay.innerText = data.file.filename;   
+            
+    }); 
+    });
+
+    if({{hasUploaded}}){
+        uploadForm.style.display='none'
+        uploadText.innerHTML="Graded"
+        uploadText.style.textAlign="center"
+        uploadText.style.marginTop="130px"
+        createAssignment.style.display='none'
+
+    }
+
+    let submissionDisplay = document.getElementById('deadline');
+    
+    if (submissionDisplay.classList.contains('NA')) {
+        
+    } else {
+        let temp = submissionDisplay.classList[0] + " " + submissionDisplay.classList[1] + " " + submissionDisplay.classList[2] + " " + submissionDisplay.classList[3] + " " + submissionDisplay.classList[4] ;
+        if (temp.includes('undefined')) {
+            
+        } else {
+            submissionDisplay.innerHTML = 'Submitted At: ' +   temp;
+        }
+    }
+</script>

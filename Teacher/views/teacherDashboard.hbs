@@ -1,0 +1,171 @@
+<style>
+
+    body{
+        background-color: rgb(231 237 239);
+    }
+    .tableTeacherDashboard{
+        display: flex;
+        justify-content: center;
+    }
+    th, td{
+        border: 1px solid black;
+    }
+    table{
+        margin-top: 5%;
+        width: 60%;
+        height: auto;
+    }
+    tr>th{
+        font-size: large;
+        background-color: #d2f6ff;
+        padding: 20px;
+    }
+    tr>td{
+        background-color: #f0fbff;
+        padding: 20px;
+    }
+    .middleClassDashboard{
+        height: 10%;
+        margin: 10px auto;
+    }
+
+    .bottomClassDashboard{
+        margin: 10px auto;
+    }
+
+</style>
+
+
+<div class="middleClassDashboard">
+    <div class="classNavbar">
+        <div class="box1" id="box-1">
+            <h3 style="font-size: x-large">CLASSES</h3>
+        </div>
+        <div style="font-size: x-large" class="box1" id="box-2">
+            <h3>SCHEDULE</h3>
+        </div>
+        
+    </div>
+</div>
+
+
+<div class="bottomClassDashboard"> 
+
+    <div class="box" id="allAssignments">
+
+    {{#each allClasses}}
+
+        <div class="card" id="card-{{@key}}" onclick="editCard({{@key}})">
+            <div class="upperPart">
+                <div class="data teacherDashClassName">{{this.className}}</div>
+                <div class="data" id="class-{{@key}}">{{this.classCode}}</div>
+              
+                <div class="data">{{this.classTeacher}}</div>
+                <div>
+                    <hr> 
+                </div>
+            </div>
+            
+            <div class="lowerPart">
+                <div class="data description" >{{this.classDescription}}</div>
+            </div>
+            <br><br>
+        </div>
+    {{/each}}
+
+    <div id="allAssignments">
+    
+        {{#each allAssignments}}
+
+        <div class="assignment card {{this._id}}" id="assignment-{{@key}}" onclick="openAssignment({{@key}})">
+            <div class="upperPart">
+                <div>{{this.title}}</div>
+                <div>
+                    <hr style="margin: 4%;">
+                </div>
+                <div class="data" style="color: rgb(143, 138, 138);">{{this.description}}</div>     
+            </div>
+        </div>
+
+        {{/each}}
+
+        </div>
+    </div>
+
+    <div class="tableTeacherDashboard" id="allSchedule" style="overflow-x: auto; margin: auto 10px;">
+        <table border="2" class="timeTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th style="width: 30rem;">Description</th>
+                <th>Start Time</th>
+                <th>Duration</th>
+                <th>Link (click to open) </th>
+                <th>Passcode </th>
+            </tr>
+        </thead>
+        {{#each allScheduledClasses}}
+
+        <tbody>
+            <tr>
+                <td>{{this.title}}</td>
+                <td>
+                    <p style="overflow-y: scroll; width: 250px; height: 100px;">{{this.description}}</p>
+                </td>
+                <td>{{formatDate this.startTime 'MMMM Do YYYY, h:mm:ss a'}}</td>
+                <td>{{this.duration}} Hours</td>
+                <td style="cursor: pointer;" id="btn-{{@key}}" onclick="openClassinNewWindow({{@key}})">{{this.classLink}}</td>
+                <td>
+                    {{formatPassword this.classPassword}}
+                    
+                </td>
+            </tr>
+        </tbody>
+        {{/each}}
+        </table>
+    </div>
+    
+</div>
+
+<script>
+    document.getElementById("allSchedule").style.display="none";
+    document.getElementById("allAssignments").style.display="grid";
+    document.getElementById("box-1").style.borderBottom="2px solid #1e8dff";
+    document.getElementById("box-1").style.backgroundColor="#f0fbff";
+
+    document.getElementById("box-1").addEventListener("click", function() {
+        document.getElementById("allAssignments").style.display="grid";
+        document.getElementById("allSchedule").style.display="none";
+        document.getElementById("box-1").style.borderBottom="2px solid #1e8dff";
+        document.getElementById("box-2").style.borderBottom="none";
+        document.getElementById("box-1").style.backgroundColor="#f0fbff";
+        document.getElementById("box-2").style.backgroundColor="#E7EDEF";
+    });
+    document.getElementById("box-2").addEventListener("click", function() {
+        document.getElementById("allSchedule").style.display="flex";
+        document.getElementById("allAssignments").style.display="none";
+        document.getElementById("box-2").style.borderBottom="2px solid #1e8dff";
+        document.getElementById("box-1").style.borderBottom="none";
+        document.getElementById("box-2").style.backgroundColor="#f0fbff";
+        document.getElementById("box-1").style.backgroundColor="#E7EDEF";
+
+    });
+
+
+    function editCard(key){
+        console.log(key);
+        let id = `class-${key}`;
+        console.log(id);
+        location.assign('/teacherDashboard/'+document.getElementById(id).innerHTML);
+    }
+
+
+
+    function openClassinNewWindow(key){
+        let meetLink = document.getElementById(`btn-${key}`).innerText;
+        window.open(meetLink);
+    }
+
+
+    
+</script>

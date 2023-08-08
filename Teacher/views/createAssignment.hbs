@@ -1,0 +1,107 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        background-color: rgb(224 229 231);
+        overflow: hidden;
+    }
+    .triangleRight{
+        position: absolute;
+        right: -3%;
+        top: 50%;
+        transform: rotate(90deg);
+        height: 20rem;
+        width: 0;
+        animation: triangle 1s linear 1s forwards;
+    }
+    .triangleLeft{
+        height: 20rem;
+        width: 0;
+        position: absolute;
+        left: -5%;
+        top: 6%;
+        transform: rotate(270deg);
+        animation: triangle 1s linear 0.5s forwards;
+    }
+    @keyframes triangle{
+        0%{
+            width: 0px;
+        }
+        50%{
+            width: 40rem;
+        }
+        75%{
+            width: 30rem;
+        }
+        100%{
+            width: 25rem;
+        }
+
+    }
+</style>
+
+<div class="mainContainer2">
+
+<img src="https://www.fne.com/wp-content/uploads/light-blue-triangle-down.png" alt="triangle" class="triangleRight"/>
+<img src="https://www.fne.com/wp-content/uploads/light-blue-triangle-down.png" alt="triangle" class="triangleLeft"/>
+
+    <div class="formContainer margin" style="text-align: center; margin: 10% 0 0 37%;">
+        <h2 style="margin: 3%;">Form To Create Assignment</h2>
+    
+        <form id="createAssignmentForm" action="#" method="POST" class="margin">
+            <input type="text" name="title" placeholder="Assignment Title" class="margin className"> 
+            <br>
+            <textarea name="description" id="description" class="margin" cols="30" rows="10" class="margin textArea" placeholder="Type Assignment Description"></textarea>
+            <br>
+            <input type="number" name="totalMarks" id="totalMarks" class="margin className" placeholder="Total marks">
+            <br>
+            <input type="datetime-local" name="deadline" id="deadline" class="margin className" placeholder="Deadline">
+            <br>
+            <div>
+                <input type="file" name="file" id="file" class="custom-file-input margin">
+                <br>
+                <label for="file" id="fileLabel">You Have Not Choosen Any File Yet!!!</label>
+            </div>
+            <br>
+            
+            
+            <input type="submit" value="Create Assignment" id="createAssignment" class="btn1 margin">
+        </form>
+    </div>
+    <!-- <div class="formContainer margin">
+        <img src="" alt="side ki photo" class="assignmentFormImage">
+    </div> -->
+</div>
+
+<script>
+    const createAssignment = document.getElementById('createAssignment');
+    createAssignment.disabled = true;
+    const createAssignmentForm = document.getElementById('createAssignmentForm');
+    const file = document.getElementById('file');
+    let fileName;
+
+    // add event listener to file
+    file.addEventListener('change', (file)=>{
+        // get the file
+        console.log('click to hua yrr');
+        console.log(file.target.files[0]);
+        let formData = new FormData();           
+        formData.append("file", file.target.files[0]);
+        fetch('/upload', {
+            method: "POST",
+            body: formData
+        }).then(res => res.json()).then(data => {
+            fileName = data["file"].filename;
+            let action = location.pathname + '/' + fileName;
+            createAssignmentForm.setAttribute('action', action);
+            console.log('unique file name: ' , fileName);
+            fileLabel.innerText = data["file"].originalname;
+            file.disabled = true; 
+            createAssignment.disabled = false;  
+            // dataDisplay.innerText = data.file.filename;   
+            
+    }); 
+    });
+</script>
